@@ -16,7 +16,28 @@ import { Item } from "@/components/Item";
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE];
 
-const ITEMS = Array.from({ length: 100 }).map((value, index) => String(index));
+const ITEMS = [
+  {
+    id: "1",
+    status: FilterStatus.DONE,
+    description: "Comprar café... quiero café...",
+  },
+  {
+    id: "2",
+    status: FilterStatus.PENDING,
+    description: "fazer coisas..",
+  },
+  {
+    id: "3",
+    status: FilterStatus.DONE,
+    description: "Comprar e tal..",
+  },
+  {
+    id: "4",
+    status: FilterStatus.PENDING,
+    description: "lavanderia",
+  },
+];
 
 export default function Home() {
   return (
@@ -46,17 +67,21 @@ export default function Home() {
 
         {/* FlatList - renderiza somente os itens que aparecem na tela, melhor para performance (já tem scroll) */}
         <FlatList
+          // data={[]}
           data={ITEMS}
-          keyExtractor={(item) => item}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <Item
-              data={{
-                status: FilterStatus.DONE,
-                desciption: item,
-              }}
+              data={item}
               onChangeStatus={() => console.log("alterar status..")}
               onRemove={() => console.log("remover..")}
             />
+          )}
+          showsVerticalScrollIndicator={false}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={() => (
+            <Text style={styles.empty}>Nenhum item cadastrado</Text>
           )}
         />
 
