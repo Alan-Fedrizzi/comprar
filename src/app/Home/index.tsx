@@ -83,7 +83,40 @@ export default function Home() {
       await getItemsByStatus();
     } catch (error) {
       console.log(error);
-      Alert.alert("Remover", "Não foi possível removero o item.");
+      Alert.alert("Remover", "Não foi possível remover o item.");
+    }
+  }
+
+  function handleClear() {
+    Alert.alert("Limpar", "Deseja remover todos os itens?", [
+      {
+        text: "Não",
+        style: "cancel",
+      },
+      {
+        text: "Sim",
+        onPress: () => onClear(),
+      },
+    ]);
+  }
+
+  async function handleToggleItemStatus(id: string) {
+    try {
+      await itemsStorage.toggleStatus(id);
+      await getItemsByStatus();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Alterar Item", "Não foi possível alterar o status do item.");
+    }
+  }
+
+  async function onClear() {
+    try {
+      await itemsStorage.clear();
+      setItems([]);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Limpar", "Não foi possível limpar a lista.");
     }
   }
 
@@ -123,7 +156,11 @@ export default function Home() {
             />
           ))}
 
-          <TouchableOpacity style={styles.clearButton} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={styles.clearButton}
+            activeOpacity={0.8}
+            onPress={handleClear}
+          >
             <Text style={styles.clearText}>Limpar</Text>
           </TouchableOpacity>
         </View>
@@ -137,7 +174,7 @@ export default function Home() {
           renderItem={({ item }) => (
             <Item
               data={item}
-              onChangeStatus={() => console.log("alterar status..")}
+              onChangeStatus={() => handleToggleItemStatus(item.id)}
               onRemove={() => handleRemoveItem(item.id)}
             />
           )}
